@@ -1,15 +1,18 @@
 import React, { Component } from 'react'
 import Link from 'gatsby-link'
 import CurrencyInput from 'react-currency-input'
-import { SSL_OP_PKCS1_CHECK_1 } from 'constants'
+import InputRange from 'react-input-range'
+import InputGroup from '../components/InputGroup'
+import './input-range.css'
+import { VictoryPie, VictoryLabel } from 'victory'
 
 class IndexPage extends Component {
   state = {
     homePrice: '315000',
     downPayment: '50000',
     downPaymentPercent: '',
-    loanProgram: '30',
-    interestRate: '4.368'
+    term: '30',
+    interestRate: 4
   }
 
   handleChange = event => {
@@ -21,17 +24,17 @@ class IndexPage extends Component {
   calculateMortage = () => {
     let homePrice = parseInt(this.state.homePrice, 10)
     let downPayment = parseInt(this.state.downPayment, 10)
-    let loanProgram = parseInt(this.state.loanProgram, 10)
+    let term = parseInt(this.state.term, 10)
 
     console.log(homePrice)
     console.log(downPayment)
-    console.log(loanProgram)
+    console.log(term)
 
     let monthlyRate = this.monthlyRate()
     console.log(monthlyRate)
 
     let loanValue = homePrice - downPayment
-    let pow = Math.pow(1 + monthlyRate, loanProgram * 12)
+    let pow = Math.pow(1 + monthlyRate, term * 12)
     let mortage = loanValue * ((monthlyRate * pow) / (pow - 1))
     if (mortage !== null && mortage !== undefined && mortage !== NaN) {
       return mortage
@@ -48,81 +51,218 @@ class IndexPage extends Component {
   render() {
     let mortage = this.calculateMortage()
     return (
-      <div className="mx-auto md:w-1/2">
-        <h1 className="text-2xl mb-6">Mortgage Calculator </h1>
-        <form>
-          <label
-            className="block font-bold text-grey-darker mb-2 text-xs uppercase"
-            htmlFor="first-name"
-          >
-            What's the purchase price of the home?
-          </label>
-          <input
-            className="appearance-none block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
-            precision="0"
-            name="homePrice"
-            value={this.state.homePrice}
-            onChange={this.handleChange}
-          />
-          <label
-            className="block font-bold text-grey-darker mb-2 text-xs uppercase"
-            htmlFor="last-name"
-          >
-            How much do you want to put down?
-          </label>
-          <input
-            className="appearance-none block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
-            id="last-name"
-            type="number"
-            min="0"
-            placeholder="$30.000"
-            name="downPayment"
-            value={this.state.downPayment}
-            onChange={this.handleChange}
-          />
-          <label
-            className="block font-bold text-grey-darker mb-2 text-xs uppercase"
-            htmlFor="zip-code"
-          >
-            What's your loan program in years?
-          </label>
-          <input
-            className="appearance-none block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
-            id="loanProgram"
-            type="number"
-            min="0"
-            placeholder="1"
-            name="loanProgram"
-            value={this.state.loanProgram}
-            onChange={this.handleChange}
-          />
-          <label
-            className="block font-bold text-grey-darker mb-2 text-xs uppercase"
-            htmlFor="credit"
-          >
-            What's your interest rate?
-          </label>
-          <input
-            className="appearance-none block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
-            id="loanProgram"
-            type="text"
-            min="0"
-            name="interestRate"
-            value={this.state.interestRate}
-            onChange={this.handleChange}
-          />
-          <div className="my-16 border-yellow border-style-solid border-4 p-2">
-            <label
-              className="block font-bold text-grey-darkest mb-2 text-xl uppercase"
-              htmlFor="credit"
-            >
-              Your monthly rate
-            </label>
-            <div className="font-bold text-grey-darkest text-3xl">
-              ${mortage}
-            </div>
+      <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <h1 className="text-2xl mb-6">Calculator </h1>
+        <h2 className="text-xl text-grey mb-8">
+          Estimate your monthly mortgage payments.
+        </h2>
+
+        <div className="block md:flex flex-row  -mx-4">
+          <div className="w-100 md:w-1/2 px-4">
+            <form>
+              <div className="mb-4 flex items-center">
+                <div className="w-1/3">
+                  <label
+                    className="block font-bold text-grey-darker mb-2 text-xs uppercase pr-8 text-right"
+                    htmlFor="homePrice"
+                  >
+                    Home price
+                  </label>
+                </div>
+                <div className="w-1/3">
+                  <InputRange
+                    minValue={0}
+                    maxValue={2000000}
+                    name="homeRange"
+                    value={this.state.homePrice}
+                    onChange={value => {
+                      this.setState({ homePrice: value })
+                    }}
+                    className="block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
+                  />
+                </div>
+                <div className="w-1/3 ml-8">
+                  <div className="flex items-stretch relative w-full">
+                    <div className="-mr-px flex">
+                      <div
+                        className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
+                        style={{ padding: '.375rem .75rem' }}
+                      >
+                        $
+                      </div>
+                    </div>
+                    <input
+                      className="relative appearance-none bg-yellow-lighter p-3 rounded-md text-grey-darker w-full pl-4"
+                      style={{ flex: '1 1 auto' }}
+                      precision="0"
+                      name="homePrice"
+                      value={this.state.homePrice}
+                      onChange={this.handleChange}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mb-4 flex items-center">
+                <div className="w-1/3">
+                  <label
+                    className="block font-bold text-grey-darker mb-2 text-xs uppercase pr-8 text-right"
+                    htmlFor="last-name"
+                  >
+                    Down Payment
+                  </label>
+                </div>
+                <div className="w-1/3">
+                  <InputRange
+                    minValue={0}
+                    maxValue={2000000}
+                    name="downPayment"
+                    value={this.state.downPayment}
+                    onChange={value => {
+                      this.setState({ downPayment: value })
+                    }}
+                    className="block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
+                  />
+                </div>
+                <div className="w-1/3 ml-8">
+                  <div className="flex items-stretch relative w-full">
+                    <div className="-mr-px flex">
+                      <div
+                        className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
+                        style={{ padding: '.375rem .75rem' }}
+                      >
+                        $
+                      </div>
+                    </div>
+                    <input
+                      className="appearance-none block bg-yellow-lighter p-3 rounded-md text-grey-darker w-full"
+                      id="last-name"
+                      type="number"
+                      min="0"
+                      placeholder="$30.000"
+                      name="downPayment"
+                      value={this.state.downPayment}
+                      onChange={this.handleChange}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mb-4 flex items-center">
+                <div className="w-1/3">
+                  <label
+                    className="block font-bold text-grey-darker mb-2 text-xs uppercase  pr-8  text-right"
+                    htmlFor="zip-code"
+                  >
+                    Term
+                  </label>
+                </div>
+                <div className="w-1/3">
+                  <InputRange
+                    minValue={10}
+                    maxValue={30}
+                    name="term"
+                    value={this.state.term}
+                    onChange={value => {
+                      this.setState({ term: value })
+                    }}
+                    className="block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
+                  />
+                </div>
+                <div className="w-1/3 ml-8">
+                  <div className="flex items-stretch relative w-full">
+                    <div className="-mr-px flex" />
+                    <input
+                      className="appearance-none block bg-yellow-lighter p-3 rounded-md text-grey-darker w-full"
+                      id="term"
+                      type="number"
+                      min="10"
+                      min="30"
+                      placeholder="10"
+                      name="term"
+                      value={this.state.term}
+                      onChange={this.handleChange}
+                    />
+                    <div
+                      className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
+                      style={{ padding: '.375rem .75rem' }}
+                    >
+                      Years
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mb-4 flex items-center">
+                <div className="w-1/3">
+                  <label
+                    className="block font-bold text-grey-darker mb-2 text-xs uppercase pr-8 text-right"
+                    htmlFor="credit"
+                  >
+                    APR
+                  </label>
+                </div>
+                <div className="w-1/3">
+                  <InputRange
+                    minValue={4}
+                    maxValue={7}
+                    step={0.01}
+                    name="term"
+                    value={this.state.interestRate}
+                    onChange={value => {
+                      this.setState({ interestRate: value })
+                    }}
+                    className="block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
+                  />
+                </div>
+                <div className="w-1/3 ml-8">
+                  <div className="flex items-stretch relative w-full">
+                    <div className="-mr-px flex" />
+                    <input
+                      className="appearance-none block bg-yellow-lighter p-3 rounded-md text-grey-darker w-full"
+                      id="term"
+                      type="number"
+                      min="2"
+                      min="7"
+                      step="0.01"
+                      name="interestRate"
+                      value={this.state.interestRate}
+                      onChange={this.handleChange}
+                    />
+                    <div
+                      className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
+                      style={{ padding: '.375rem .75rem' }}
+                    >
+                      %
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
           </div>
-        </form>
+          <div className="w-100 sm:w-1/2 px-4">
+            <svg viewBox="0 0 400 400">
+              <VictoryPie
+                standalone={false}
+                width={400}
+                height={400}
+                data={[{ x: 1, y: 120 }, { x: 2, y: 150 }, { x: 3, y: 75 }]}
+                innerRadius={68}
+                labelRadius={100}
+                style={{ labels: { fontSize: 20, fill: 'white' } }}
+              />
+              <VictoryLabel
+                textAnchor="middle"
+                style={{ fontSize: 20 }}
+                x={200}
+                y={200}
+                text={`$${mortage
+                  .toFixed(2)
+                  .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}`}
+              />
+            </svg>
+          </div>
+        </div>
       </div>
     )
   }

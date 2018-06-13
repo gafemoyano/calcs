@@ -8,11 +8,9 @@ import { VictoryPie, VictoryLabel } from 'victory'
 
 class IndexPage extends Component {
   state = {
-    homePrice: '315000',
-    downPayment: '50000',
-    downPaymentPercent: '',
-    term: '30',
-    interestRate: 4
+    mortgageLoan: 90000,
+    term: 15,
+    interestRate: 6
   }
 
   handleChange = event => {
@@ -22,25 +20,33 @@ class IndexPage extends Component {
   }
 
   calculateMortage = () => {
-    let homePrice = parseInt(this.state.homePrice, 10)
-    let downPayment = parseInt(this.state.downPayment, 10)
+    let mortgageLoan = parseInt(this.state.mortgageLoan, 10)
     let term = parseInt(this.state.term, 10)
-
-    console.log(homePrice)
-    console.log(downPayment)
-    console.log(term)
-
     let monthlyRate = this.monthlyRate()
-    console.log(monthlyRate)
 
-    let loanValue = homePrice - downPayment
     let pow = Math.pow(1 + monthlyRate, term * 12)
-    let mortage = loanValue * ((monthlyRate * pow) / (pow - 1))
+    let mortage = mortgageLoan * ((monthlyRate * pow) / (pow - 1))
     if (mortage !== null && mortage !== undefined && mortage !== NaN) {
       return mortage
     } else {
       return 0
     }
+  }
+
+  totalInterest = () => {
+    let interestRate = parseFloat(this.state.interestRate / 12) / 100
+    let mortgageLoan = parseInt(this.state.mortgageLoan, 10)
+    let payments = this.state.term * 12
+    let monthlyAmount = this.calculateMortage()
+    let principal = []
+    let totalInterest = 0
+    for (var i = 1; i <= payments; i++) {
+      let interestPaid = mortgageLoan * interestRate
+      let principalPaid = monthlyAmount - interestPaid
+      mortgageLoan = mortgageLoan - principalPaid
+      totalInterest = totalInterest + interestPaid
+    }
+    return parseInt(totalInterest, 10)
   }
 
   monthlyRate() {
@@ -49,7 +55,11 @@ class IndexPage extends Component {
   }
 
   render() {
-    let mortage = this.calculateMortage()
+    let { mortgageLoan, downPayment, term, interestRate } = this.state
+    let mortage = parseInt(this.calculateMortage(), 10)
+    let totalInterest = this.totalInterest()
+    let totalLoan = totalInterest + mortgageLoan
+
     return (
       <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <h1 className="text-2xl mb-6">Calculator </h1>
@@ -64,9 +74,9 @@ class IndexPage extends Component {
                 <div className="w-1/3">
                   <label
                     className="block font-bold text-grey-darker mb-2 text-xs uppercase pr-8 text-right"
-                    htmlFor="homePrice"
+                    htmlFor="mortgageLoan"
                   >
-                    Home price
+                    Mortage Loan
                   </label>
                 </div>
                 <div className="w-1/3">
@@ -74,9 +84,9 @@ class IndexPage extends Component {
                     minValue={0}
                     maxValue={2000000}
                     name="homeRange"
-                    value={this.state.homePrice}
+                    value={this.state.mortgageLoan}
                     onChange={value => {
-                      this.setState({ homePrice: value })
+                      this.setState({ mortgageLoan: value })
                     }}
                     className="block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
@@ -95,59 +105,13 @@ class IndexPage extends Component {
                       className="relative appearance-none bg-yellow-lighter p-3 rounded-md text-grey-darker w-full pl-4"
                       style={{ flex: '1 1 auto' }}
                       precision="0"
-                      name="homePrice"
-                      value={this.state.homePrice}
+                      name="mortgageLoan"
+                      value={this.state.mortgageLoan}
                       onChange={this.handleChange}
                     />
                   </div>
                 </div>
               </div>
-
-              <div className="mb-4 flex items-center">
-                <div className="w-1/3">
-                  <label
-                    className="block font-bold text-grey-darker mb-2 text-xs uppercase pr-8 text-right"
-                    htmlFor="last-name"
-                  >
-                    Down Payment
-                  </label>
-                </div>
-                <div className="w-1/3">
-                  <InputRange
-                    minValue={0}
-                    maxValue={2000000}
-                    name="downPayment"
-                    value={this.state.downPayment}
-                    onChange={value => {
-                      this.setState({ downPayment: value })
-                    }}
-                    className="block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
-                  />
-                </div>
-                <div className="w-1/3 ml-8">
-                  <div className="flex items-stretch relative w-full">
-                    <div className="-mr-px flex">
-                      <div
-                        className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
-                        style={{ padding: '.375rem .75rem' }}
-                      >
-                        $
-                      </div>
-                    </div>
-                    <input
-                      className="appearance-none block bg-yellow-lighter p-3 rounded-md text-grey-darker w-full"
-                      id="last-name"
-                      type="number"
-                      min="0"
-                      placeholder="$30.000"
-                      name="downPayment"
-                      value={this.state.downPayment}
-                      onChange={this.handleChange}
-                    />
-                  </div>
-                </div>
-              </div>
-
               <div className="mb-4 flex items-center">
                 <div className="w-1/3">
                   <label
@@ -241,26 +205,79 @@ class IndexPage extends Component {
             </form>
           </div>
           <div className="w-100 sm:w-1/2 px-4">
-            <svg viewBox="0 0 400 400">
-              <VictoryPie
-                standalone={false}
-                width={400}
-                height={400}
-                data={[{ x: 1, y: 120 }, { x: 2, y: 150 }, { x: 3, y: 75 }]}
-                innerRadius={68}
-                labelRadius={100}
-                style={{ labels: { fontSize: 20, fill: 'white' } }}
-              />
-              <VictoryLabel
-                textAnchor="middle"
-                style={{ fontSize: 20 }}
-                x={200}
-                y={200}
-                text={`$${mortage
-                  .toFixed(2)
-                  .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}`}
-              />
-            </svg>
+            <div className="max-w-xs mx-auto -mt-8">
+              <svg viewBox="0 0 400 400">
+                <VictoryPie
+                  standalone={false}
+                  colorScale={['#fdb714', '#b8c2cc']}
+                  width={400}
+                  height={400}
+                  data={[
+                    { x: '', y: parseInt(mortgageLoan, 10) },
+                    { x: '', y: totalInterest }
+                  ]}
+                  innerRadius={68}
+                  labelRadius={100}
+                  style={{ labels: { fontSize: 20, fill: 'white' } }}
+                />
+                <VictoryLabel
+                  textAnchor="middle"
+                  style={{ fontSize: 25, fontWeight: 500 }}
+                  x={200}
+                  y={200}
+                  text={`$${mortage
+                    .toFixed(2)
+                    .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}`}
+                />
+              </svg>
+              <div className="block">
+                <div className="flex justify-between mb-4">
+                  <div className="items-center">
+                    <div
+                      className="rounded-full p-4"
+                      style={{ backgroundColor: '#fdb714' }}
+                    />
+                  </div>
+                  <div className="text-left">
+                    <div className="text-grey-darker text-2xl">
+                      Principal loan ammount
+                    </div>
+                    <div className="text-grey-darkest text-2xl text-bold">
+                      ${mortgageLoan
+                        .toFixed(2)
+                        .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-between mb-4">
+                  <div className="items-center">
+                    <div className="rounded-full p-4 bg-grey" />
+                  </div>
+                  <div className="text-left">
+                    <div className="text-grey-darker text-2xl">
+                      Total interest ammount
+                    </div>
+                    <div className="text-grey-darkest text-2xl text-bold">
+                      ${totalInterest
+                        .toFixed(2)
+                        .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex text-right">
+                  <div className="ml-auto">
+                    <div className="text-grey-darker text-2xl font-semibold">
+                      Total loan cost
+                    </div>
+                    <div className="text-grey-darkest text-2xl font-bold">
+                      ${totalLoan
+                        .toFixed(2)
+                        .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

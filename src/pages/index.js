@@ -19,6 +19,22 @@ class IndexPage extends Component {
     })
   }
 
+  handleMortgageLoanChange = event => {
+    let newValue = this.state.mortgageLoan
+    const value = event.target.value
+    if (value !== null) {
+      if (value.length > 0) {
+        if (!isNaN(value)) {
+          newValue = parseInt(value)
+        }
+      }
+    }
+    newValue = newValue.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')
+    this.setState({
+      [event.target.name]: newValue
+    })
+  }
+
   calculateMortage = () => {
     let mortgageLoan = parseInt(this.state.mortgageLoan, 10)
     let term = parseInt(this.state.term, 10)
@@ -31,6 +47,14 @@ class IndexPage extends Component {
     } else {
       return 0
     }
+  }
+  formatText = event => {
+    const currentValue = parseInt(event.currentTarget.value, 10)
+    this.setState({
+      [event.currentTarget.name]: currentValue
+        .toFixed()
+        .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')
+    })
   }
 
   totalInterest = () => {
@@ -49,6 +73,15 @@ class IndexPage extends Component {
     return parseInt(totalInterest, 10)
   }
 
+  interestOnlyMortgagePayment = () => {
+    let interestRate = parseFloat(this.state.interestRate / 12) / 100
+    let mortgageLoan = parseInt(this.state.mortgageLoan, 10)
+    let monthlyAmount = this.calculateMortage()
+    let interestPaid = mortgageLoan * interestRate
+
+    return parseInt(interestPaid, 10)
+  }
+
   monthlyRate() {
     let interestRate = parseFloat(this.state.interestRate)
     return interestRate / 100 / parseFloat(12)
@@ -56,15 +89,19 @@ class IndexPage extends Component {
 
   render() {
     let { mortgageLoan, downPayment, term, interestRate } = this.state
+    // let mortgageLoan = parseInt(this.state.mortgageLoan.replace(/,/g, ''), 10)
     let mortage = parseInt(this.calculateMortage(), 10)
     let totalInterest = this.totalInterest()
     let totalLoan = totalInterest + mortgageLoan
+    let pmt = this.interestOnlyMortgagePayment()
+    let principalPercentage = `${(mortgageLoan / totalLoan).toFixed(3) * 100} %`
+    let loanPercentage = `${(totalInterest / totalLoan).toFixed(3) * 100} %`
 
     return (
       <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <h1 className="text-2xl mb-6">Calculator </h1>
+        <h1 className="text-2xl mb-6 text-yellow-dark">Mortgage Calculator </h1>
         <h2 className="text-xl text-grey mb-8">
-          Estimate your monthly mortgage payments.
+          Estimate Your Monthly Mortgage Payments
         </h2>
 
         <div className="block md:flex flex-row  -mx-4">
@@ -76,7 +113,7 @@ class IndexPage extends Component {
                     className="block font-bold text-grey-darker mb-2 text-xs uppercase pr-8 text-right"
                     htmlFor="mortgageLoan"
                   >
-                    Mortage Loan
+                    Mortgage Loan
                   </label>
                 </div>
                 <div className="w-1/3">
@@ -84,7 +121,7 @@ class IndexPage extends Component {
                     minValue={0}
                     maxValue={2000000}
                     name="homeRange"
-                    value={this.state.mortgageLoan}
+                    value={mortgageLoan}
                     onChange={value => {
                       this.setState({ mortgageLoan: value })
                     }}
@@ -101,13 +138,12 @@ class IndexPage extends Component {
                         $
                       </div>
                     </div>
-                    <input
+                    <CurrencyInput
                       className="relative appearance-none bg-yellow-lighter p-3 rounded-md text-grey-darker w-full pl-4"
                       style={{ flex: '1 1 auto' }}
-                      precision="0"
                       name="mortgageLoan"
                       value={this.state.mortgageLoan}
-                      onChange={this.handleChange}
+                      onChangeEvent={this.handleChange}
                     />
                   </div>
                 </div>
@@ -141,7 +177,7 @@ class IndexPage extends Component {
                       id="term"
                       type="number"
                       min="10"
-                      min="30"
+                      max="30"
                       placeholder="10"
                       name="term"
                       value={this.state.term}
@@ -186,8 +222,8 @@ class IndexPage extends Component {
                       className="appearance-none block bg-yellow-lighter p-3 rounded-md text-grey-darker w-full"
                       id="term"
                       type="number"
-                      min="2"
-                      min="7"
+                      min="4"
+                      max="7"
                       step="0.01"
                       name="interestRate"
                       value={this.state.interestRate}
@@ -209,7 +245,7 @@ class IndexPage extends Component {
               <svg viewBox="0 0 400 400">
                 <VictoryPie
                   standalone={false}
-                  colorScale={['#fdb714', '#b8c2cc']}
+                  colorScale={['#22292f', '#fdb714']}
                   width={400}
                   height={400}
                   data={[
@@ -222,7 +258,7 @@ class IndexPage extends Component {
                 />
                 <VictoryLabel
                   textAnchor="middle"
-                  style={{ fontSize: 25, fontWeight: 500 }}
+                  style={{ fontSize: 28, fontWeight: 500, fill: '#fdb714' }}
                   x={200}
                   y={200}
                   text={`$${mortage
@@ -231,42 +267,64 @@ class IndexPage extends Component {
                 />
               </svg>
               <div className="block">
-                <div className="flex justify-between mb-4">
+                <div className="flex justify-start mb-4">
                   <div className="items-center">
                     <div
-                      className="rounded-full p-4"
+                      className="rounded-full p-4 mr-3"
+                      style={{ backgroundColor: '#22292f' }}
+                    />
+                  </div>
+                  <div className="text-left">
+                    <div className="text-grey-darker text-xl">
+                      Principal loan amount
+                    </div>
+                    <div className="text-yellow-dark-darkest text-xl font-semibold">
+                      ${mortgageLoan
+                        .toFixed(2)
+                        .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}
+                      <span className="text-grey-dark ml-2 font-light">
+                        {principalPercentage}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-start mb-4">
+                  <div className="items-center">
+                    <div
+                      className="rounded-full p-4 mr-3"
                       style={{ backgroundColor: '#fdb714' }}
                     />
                   </div>
                   <div className="text-left">
-                    <div className="text-grey-darker text-2xl">
-                      Principal loan ammount
+                    <div className="text-grey-darker text-xl">
+                      Total interest amount
                     </div>
-                    <div className="text-grey-darkest text-2xl text-bold">
-                      ${mortgageLoan
-                        .toFixed(2)
-                        .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex justify-between mb-4">
-                  <div className="items-center">
-                    <div className="rounded-full p-4 bg-grey" />
-                  </div>
-                  <div className="text-left">
-                    <div className="text-grey-darker text-2xl">
-                      Total interest ammount
-                    </div>
-                    <div className="text-grey-darkest text-2xl text-bold">
+                    <div className="text-grey-darkest text-xl font-semibold">
                       ${totalInterest
                         .toFixed(2)
                         .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}
+                      <span className="text-grey-dark ml-2 font-light">
+                        {loanPercentage}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-start mb-4">
+                  <div className="items-center">
+                    <div className="rounded-full p-4 mr-3 bg-grey" />
+                  </div>
+                  <div className="text-left">
+                    <div className="text-grey-darker text-xl">
+                      Interest-Only Mortgage Payment
+                    </div>
+                    <div className="text-yellow-dark-darkest text-xl font-semibold">
+                      ${pmt.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}
                     </div>
                   </div>
                 </div>
                 <div className="flex text-right">
                   <div className="ml-auto">
-                    <div className="text-grey-darker text-2xl font-semibold">
+                    <div className="text-grey-darker text-xl font-semibold">
                       Total loan cost
                     </div>
                     <div className="text-grey-darkest text-2xl font-bold">

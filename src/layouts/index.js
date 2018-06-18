@@ -14,7 +14,12 @@ const TemplateWrapper = ({ children }) => (
         { name: 'description', content: 'Sample' },
         { name: 'keywords', content: 'sample, something' }
       ]}
-    />
+    >
+      <link
+        href="https://fonts.googleapis.com/css?family=Montserrat"
+        rel="stylesheet"
+      />
+    </Helmet>
     <div className="flex flex-col flex-1 md:justify-center px-4 py-8 md:p-8 ">
       {children()}
     </div>

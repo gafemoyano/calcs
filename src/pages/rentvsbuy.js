@@ -80,13 +80,9 @@ class RentVsBuy extends Component {
 
     return (
       <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <h1 className="text-2xl mb-6 text-yellow-dark">
-          Rent Vs Buy Calculator{' '}
-        </h1>
-        <h2 className="text-xl text-grey mb-8">
+        <h1 className="text-xl text-grey mb-8">
           Decide Between Buying a Home or Renting
-        </h2>
-
+        </h1>
         <div className="block md:flex flex-row  -mx-4">
           <div className="w-100 md:w-1/2 px-4">
             <form>
@@ -94,8 +90,9 @@ class RentVsBuy extends Component {
                 <div className="w-1/3">
                   <label
                     className="block font-bold text-grey-darker mb-2 text-xs uppercase pr-8 text-right"
-                    htmlFor="monthlyRent">
-                    Monthly Rent
+                    htmlFor="monthlyRent"
+                  >
+                    How much are you currently paying in rent?
                   </label>
                 </div>
                 <div className="w-1/3">
@@ -115,7 +112,8 @@ class RentVsBuy extends Component {
                     <div className="-mr-px flex">
                       <div
                         className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
-                        style={{ padding: '.375rem .75rem' }}>
+                        style={{ padding: '.375rem .75rem' }}
+                      >
                         $
                       </div>
                     </div>
@@ -129,12 +127,16 @@ class RentVsBuy extends Component {
                   </div>
                 </div>
               </div>
-
+              <h4 className="mb-4 text-grey-dark font-bold text-md w-1/2">
+                What do you estimate Property Taxes and Insurance on the
+                property you are looking to purchase to be?
+              </h4>
               <div className="mb-4 flex items-center">
                 <div className="w-1/3">
                   <label
                     className="block font-bold text-grey-darker mb-2 text-xs uppercase pr-8 text-right"
-                    htmlFor="propertyTaxes">
+                    htmlFor="propertyTaxes"
+                  >
                     Property Taxes
                   </label>
                 </div>
@@ -155,7 +157,8 @@ class RentVsBuy extends Component {
                     <div className="-mr-px flex">
                       <div
                         className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
-                        style={{ padding: '.375rem .75rem' }}>
+                        style={{ padding: '.375rem .75rem' }}
+                      >
                         $
                       </div>
                     </div>
@@ -173,7 +176,8 @@ class RentVsBuy extends Component {
                 <div className="w-1/3">
                   <label
                     className="block font-bold text-grey-darker mb-2 text-xs uppercase pr-8 text-right"
-                    htmlFor="propertyTaxes">
+                    htmlFor="propertyTaxes"
+                  >
                     Property Insurance
                   </label>
                 </div>
@@ -194,7 +198,8 @@ class RentVsBuy extends Component {
                     <div className="-mr-px flex">
                       <div
                         className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
-                        style={{ padding: '.375rem .75rem' }}>
+                        style={{ padding: '.375rem .75rem' }}
+                      >
                         $
                       </div>
                     </div>
@@ -213,7 +218,8 @@ class RentVsBuy extends Component {
                 <div className="w-1/3">
                   <label
                     className="block font-bold text-grey-darker mb-2 text-xs uppercase pr-8 text-right"
-                    htmlFor="interestRate">
+                    htmlFor="interestRate"
+                  >
                     Interest Rate
                   </label>
                 </div>
@@ -246,17 +252,38 @@ class RentVsBuy extends Component {
                     />
                     <div
                       className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
-                      style={{ padding: '.375rem .75rem' }}>
+                      style={{ padding: '.375rem .75rem' }}
+                    >
                       %
                     </div>
                   </div>
                 </div>
               </div>
               <div className="mb-4 flex items-center">
-                <div className="w-1/3">
+                <div className="w-2/3">
                   <label
-                    className="block font-bold text-grey-darker mb-2 text-xs uppercase pr-8 text-right"
-                    htmlFor="percentageDown">
+                    className="block font-bold text-grey-darker mb-2 text-sm uppercase pr-8 text-right"
+                    htmlFor="percentageDown"
+                  >
+                    Estimated home loan monthly payment
+                  </label>
+                </div>
+                <div className="1/3 text-right ml-auto">
+                  <div className="text-yellow-dark text-2xl font-semibold">
+                    <span className="text-lg font-regular">$</span>
+                    {presentValue
+                      .toFixed(2)
+                      .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mb-4 flex items-center">
+                <div className="w-1/3 flex">
+                  <label
+                    className="block font-bold text-grey-darker mb-2 text-xs uppercase pr-8 text-right w-100"
+                    htmlFor="percentageDown"
+                  >
                     Percentage Down
                   </label>
                 </div>
@@ -289,41 +316,32 @@ class RentVsBuy extends Component {
                     />
                     <div
                       className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
-                      style={{ padding: '.375rem .75rem' }}>
+                      style={{ padding: '.375rem .75rem' }}
+                    >
                       %
                     </div>
                   </div>
                 </div>
               </div>
+              <div className="mb-4 flex items-center">
+                <div className="w-2/3">
+                  <label
+                    className="block font-bold text-grey-darker mb-2 text-sm uppercase pr-8 text-right"
+                    htmlFor="percentageDown"
+                  >
+                    Home Value for purchase
+                  </label>
+                </div>
+                <div className="1/3 text-right ml-auto">
+                  <div className="text-yellow-dark text-2xl font-semibold">
+                    <span className="text-lg font-regular">$</span>
+                    {valueForPurchase
+                      .toFixed(2)
+                      .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}
+                  </div>
+                </div>
+              </div>
             </form>
-          </div>
-          <div className="w-100 sm:w-1/2 px-4">
-            <div className="block mx-2 max-w-xs">
-              <div className="w-100 mb-6">
-                <h4 className="text-grey-darker text-lg mb-2 uppercase">
-                  VALUE FOR PURCHASE
-                </h4>
-                <div className="text-yellow-dark text-4xl font-semibold">
-                  <span className="text-3xl font-regular">$</span>
-                  {valueForPurchase
-                    .toFixed(2)
-                    .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}
-                </div>
-              </div>
-              <div className="w-100 mb-6">
-                <h4 className="text-grey-darker text-lg mb-2 uppercase">
-                  ESTIMATED HOME LOAN MONTHLY PAYMENT
-                </h4>
-                <div className="text-yellow-dark text-4xl font-semibold">
-                  <span className="text-3xl font-regular">$</span>
-                  {presentValue
-                    .toFixed(2)
-                    .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}
-                </div>
-              </div>
-            </div>
-            <div className="max-w-xs mx-auto -mt-8" />
-            <div className="max-w-xs mx-auto -mt-8" />
           </div>
         </div>
       </div>

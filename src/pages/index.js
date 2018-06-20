@@ -99,7 +99,6 @@ class IndexPage extends Component {
 
     return (
       <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <h1 className="text-2xl mb-6 text-yellow-dark">Mortgage Calculator </h1>
         <h2 className="text-xl text-grey mb-8">
           Estimate Your Monthly Mortgage Payments
         </h2>
@@ -276,7 +275,7 @@ class IndexPage extends Component {
                   </div>
                   <div className="text-left">
                     <div className="text-grey-darker text-xl">
-                      Principal loan amount
+                      Principal Loan Amount
                     </div>
                     <div className="text-yellow-dark-darkest text-xl font-semibold">
                       ${mortgageLoan
@@ -297,7 +296,7 @@ class IndexPage extends Component {
                   </div>
                   <div className="text-left">
                     <div className="text-grey-darker text-xl">
-                      Total interest amount
+                      Total Interest Amount
                     </div>
                     <div className="text-grey-darkest text-xl font-semibold">
                       ${totalInterest
@@ -325,7 +324,7 @@ class IndexPage extends Component {
                 <div className="flex text-right">
                   <div className="ml-auto">
                     <div className="text-grey-darker text-xl font-semibold">
-                      Total loan cost
+                      Total Loan Cost
                     </div>
                     <div className="text-grey-darkest text-2xl font-bold">
                       ${totalLoan

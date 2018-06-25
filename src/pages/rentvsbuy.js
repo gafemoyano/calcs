@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
-import Link from 'gatsby-link'
-import CurrencyInput from 'react-currency-input'
-import InputRange from 'react-input-range'
-import InputGroup from '../components/InputGroup'
-import './input-range.css'
-import { VictoryPie, VictoryLabel } from 'victory'
+import React, { Component } from "react";
+import Link from "gatsby-link";
+import CurrencyInput from "react-currency-input";
+import InputRange from "react-input-range";
+import InputGroup from "../components/InputGroup";
+import "./input-range.css";
+import { VictoryPie, VictoryLabel } from "victory";
 
 class RentVsBuy extends Component {
   state = {
@@ -13,58 +13,58 @@ class RentVsBuy extends Component {
     propertyInsurance: 3000,
     interestRate: 5,
     percentageDown: 10
-  }
+  };
 
   handleChange = event => {
     this.setState({
       [event.target.name]: event.target.value
-    })
-  }
+    });
+  };
 
   handleMortgageLoanChange = event => {
-    let newValue = this.state.mortgageLoan
-    const value = event.target.value
+    let newValue = this.state.mortgageLoan;
+    const value = event.target.value;
     if (value !== null) {
       if (value.length > 0) {
         if (!isNaN(value)) {
-          newValue = parseInt(value)
+          newValue = parseInt(value);
         }
       }
     }
-    newValue = newValue.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')
+    newValue = newValue.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
     this.setState({
       [event.target.name]: newValue
-    })
-  }
+    });
+  };
 
   calculateMortage = () => {
-    let mortgageLoan = parseInt(this.state.mortgageLoan, 10)
-    let term = parseInt(this.state.term, 10)
-    let monthlyRate = this.monthlyRate()
+    let mortgageLoan = parseInt(this.state.mortgageLoan, 10);
+    let term = parseInt(this.state.term, 10);
+    let monthlyRate = this.monthlyRate();
 
-    let pow = Math.pow(1 + monthlyRate, term * 12)
-    let mortage = mortgageLoan * ((monthlyRate * pow) / (pow - 1))
+    let pow = Math.pow(1 + monthlyRate, term * 12);
+    let mortage = mortgageLoan * ((monthlyRate * pow) / (pow - 1));
     if (mortage !== null && mortage !== undefined && mortage !== NaN) {
-      return mortage
+      return mortage;
     } else {
-      return 0
+      return 0;
     }
-  }
+  };
 
   presentValue = () => {
-    let { propertyInsurance, propertyTaxes, monthlyRent } = this.state
-    let monthlyRate = this.monthlyRate()
-    let pmt = monthlyRent - (propertyInsurance / 12 + propertyTaxes / 12)
+    let { propertyInsurance, propertyTaxes, monthlyRent } = this.state;
+    let monthlyRate = this.monthlyRate();
+    let pmt = monthlyRent - (propertyInsurance / 12 + propertyTaxes / 12);
     let presentValue =
       pmt *
       Math.pow(1 + monthlyRate, -360) *
-      ((Math.pow(1 + monthlyRate, 360) - 1) / monthlyRate)
-    return presentValue
-  }
+      ((Math.pow(1 + monthlyRate, 360) - 1) / monthlyRate);
+    return presentValue;
+  };
 
   monthlyRate() {
-    let interestRate = parseFloat(this.state.interestRate)
-    return interestRate / 100 / parseFloat(12)
+    let interestRate = parseFloat(this.state.interestRate);
+    return interestRate / 100 / parseFloat(12);
   }
 
   render() {
@@ -74,9 +74,9 @@ class RentVsBuy extends Component {
       propertyInsurance,
       interestRate,
       percentageDown
-    } = this.state
-    let presentValue = this.presentValue()
-    let valueForPurchase = presentValue / (1 - percentageDown / 100)
+    } = this.state;
+    let presentValue = this.presentValue();
+    let valueForPurchase = presentValue / (1 - percentageDown / 100);
 
     return (
       <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -102,7 +102,7 @@ class RentVsBuy extends Component {
                     name="monthlyRent"
                     value={monthlyRent}
                     onChange={value => {
-                      this.setState({ monthlyRent: value })
+                      this.setState({ monthlyRent: value });
                     }}
                     className="block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
@@ -112,14 +112,14 @@ class RentVsBuy extends Component {
                     <div className="-mr-px flex">
                       <div
                         className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
-                        style={{ padding: '.375rem .75rem' }}
+                        style={{ padding: ".375rem .75rem" }}
                       >
                         $
                       </div>
                     </div>
                     <CurrencyInput
                       className="relative appearance-none bg-yellow-lighter p-3 rounded-md text-grey-darker w-full pl-4"
-                      style={{ flex: '1 1 auto' }}
+                      style={{ flex: "1 1 auto" }}
                       name="monthlyRent"
                       value={this.state.monthlyRent}
                       onChangeEvent={this.handleChange}
@@ -127,7 +127,7 @@ class RentVsBuy extends Component {
                   </div>
                 </div>
               </div>
-              <h4 className="mb-4 text-grey-dark font-bold text-md w-1/2">
+              <h4 className="mb-4 text-grey-dark font-bold text-md max-w-sm">
                 What do you estimate Property Taxes and Insurance on the
                 property you are looking to purchase to be?
               </h4>
@@ -147,7 +147,7 @@ class RentVsBuy extends Component {
                     name="propertyTaxes"
                     value={propertyTaxes}
                     onChange={value => {
-                      this.setState({ propertyTaxes: value })
+                      this.setState({ propertyTaxes: value });
                     }}
                     className="block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
@@ -157,14 +157,14 @@ class RentVsBuy extends Component {
                     <div className="-mr-px flex">
                       <div
                         className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
-                        style={{ padding: '.375rem .75rem' }}
+                        style={{ padding: ".375rem .75rem" }}
                       >
                         $
                       </div>
                     </div>
                     <CurrencyInput
                       className="relative appearance-none bg-yellow-lighter p-3 rounded-md text-grey-darker w-full pl-4"
-                      style={{ flex: '1 1 auto' }}
+                      style={{ flex: "1 1 auto" }}
                       name="propertyTaxes"
                       value={this.state.propertyTaxes}
                       onChangeEvent={this.handleChange}
@@ -188,7 +188,7 @@ class RentVsBuy extends Component {
                     name="propertyInsurance"
                     value={propertyInsurance}
                     onChange={value => {
-                      this.setState({ propertyInsurance: value })
+                      this.setState({ propertyInsurance: value });
                     }}
                     className="block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
@@ -198,14 +198,14 @@ class RentVsBuy extends Component {
                     <div className="-mr-px flex">
                       <div
                         className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
-                        style={{ padding: '.375rem .75rem' }}
+                        style={{ padding: ".375rem .75rem" }}
                       >
                         $
                       </div>
                     </div>
                     <CurrencyInput
                       className="relative appearance-none bg-yellow-lighter p-3 rounded-md text-grey-darker w-full pl-4"
-                      style={{ flex: '1 1 auto' }}
+                      style={{ flex: "1 1 auto" }}
                       name="propertyInsurance"
                       value={this.state.propertyInsurance}
                       onChangeEvent={this.handleChange}
@@ -231,7 +231,7 @@ class RentVsBuy extends Component {
                     name="term"
                     value={this.state.interestRate}
                     onChange={value => {
-                      this.setState({ interestRate: value })
+                      this.setState({ interestRate: value });
                     }}
                     className="block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
@@ -252,13 +252,14 @@ class RentVsBuy extends Component {
                     />
                     <div
                       className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
-                      style={{ padding: '.375rem .75rem' }}
+                      style={{ padding: ".375rem .75rem" }}
                     >
                       %
                     </div>
                   </div>
                 </div>
               </div>
+
               <div className="mb-4 flex items-center">
                 <div className="w-2/3">
                   <label
@@ -273,7 +274,7 @@ class RentVsBuy extends Component {
                     <span className="text-lg font-regular">$</span>
                     {presentValue
                       .toFixed(2)
-                      .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}
+                      .replace(/(\d)(?=(\d{3})+\.)/g, "$1,")}
                   </div>
                 </div>
               </div>
@@ -295,7 +296,7 @@ class RentVsBuy extends Component {
                     name="term"
                     value={this.state.percentageDown}
                     onChange={value => {
-                      this.setState({ percentageDown: value })
+                      this.setState({ percentageDown: value });
                     }}
                     className="block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
@@ -316,7 +317,7 @@ class RentVsBuy extends Component {
                     />
                     <div
                       className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
-                      style={{ padding: '.375rem .75rem' }}
+                      style={{ padding: ".375rem .75rem" }}
                     >
                       %
                     </div>
@@ -334,10 +335,16 @@ class RentVsBuy extends Component {
                 </div>
                 <div className="1/3 text-right ml-auto">
                   <div className="text-yellow-dark text-2xl font-semibold">
-                    <span className="text-lg font-regular">$</span>
-                    {valueForPurchase
-                      .toFixed(2)
-                      .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}
+                    <div className="text-yellow-dark text-2xl font-semibold">
+                      <div className="rounded-full border-solid border-2 border-yellow bg-grey-darkest h-24  flex items-center justify-center">
+                        <div className="mx-2">
+                          <span className="text-lg font-regular">$</span>
+                          {valueForPurchase
+                            .toFixed(2)
+                            .replace(/(\d)(?=(\d{3})+\.)/g, "$1,")}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -345,8 +352,8 @@ class RentVsBuy extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 
-export default RentVsBuy
+export default RentVsBuy;

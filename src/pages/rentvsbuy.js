@@ -5,6 +5,7 @@ import InputRange from "react-input-range";
 import InputGroup from "../components/InputGroup";
 import "./input-range.css";
 import { VictoryPie, VictoryLabel } from "victory";
+import { formatNumber } from "../utils/utils";
 
 class RentVsBuy extends Component {
   state = {
@@ -84,7 +85,7 @@ class RentVsBuy extends Component {
           Decide Between Buying a Home or Renting
         </h1>
         <div className="block md:flex flex-row  -mx-4">
-          <div className="w-100 md:w-1/2 px-4">
+          <div className="w-100 px-4">
             <form>
               <div className="mb-4 flex items-center">
                 <div className="w-1/3">
@@ -104,7 +105,7 @@ class RentVsBuy extends Component {
                     onChange={value => {
                       this.setState({ monthlyRent: value });
                     }}
-                    className="block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
+                    className="block bg-yellow-dark font-semibold mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
                 </div>
                 <div className="w-1/3 ml-8">
@@ -118,7 +119,7 @@ class RentVsBuy extends Component {
                       </div>
                     </div>
                     <CurrencyInput
-                      className="relative appearance-none bg-yellow-lighter p-3 rounded-md text-grey-darker w-full pl-4"
+                      className="relative appearance-none bg-yellow-dark font-semibold p-3 rounded-md text-grey-darker w-full pl-4"
                       style={{ flex: "1 1 auto" }}
                       name="monthlyRent"
                       value={this.state.monthlyRent}
@@ -127,9 +128,9 @@ class RentVsBuy extends Component {
                   </div>
                 </div>
               </div>
-              <h4 className="mb-4 text-grey-dark font-bold text-md max-w-sm">
+              <h4 className="mb-4 text-grey-dark font-bold text-md ">
                 What do you estimate Property Taxes and Insurance on the
-                property you are looking to purchase to be?
+                property you are looking to purchase?
               </h4>
               <div className="mb-4 flex items-center">
                 <div className="w-1/3">
@@ -149,7 +150,7 @@ class RentVsBuy extends Component {
                     onChange={value => {
                       this.setState({ propertyTaxes: value });
                     }}
-                    className="block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
+                    className="block bg-yellow-dark font-semibold mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
                 </div>
                 <div className="w-1/3 ml-8">
@@ -163,7 +164,7 @@ class RentVsBuy extends Component {
                       </div>
                     </div>
                     <CurrencyInput
-                      className="relative appearance-none bg-yellow-lighter p-3 rounded-md text-grey-darker w-full pl-4"
+                      className="relative appearance-none bg-yellow-dark font-semibold p-3 rounded-md text-grey-darker w-full pl-4"
                       style={{ flex: "1 1 auto" }}
                       name="propertyTaxes"
                       value={this.state.propertyTaxes}
@@ -190,7 +191,7 @@ class RentVsBuy extends Component {
                     onChange={value => {
                       this.setState({ propertyInsurance: value });
                     }}
-                    className="block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
+                    className="block bg-yellow-dark font-semibold mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
                 </div>
                 <div className="w-1/3 ml-8">
@@ -204,7 +205,7 @@ class RentVsBuy extends Component {
                       </div>
                     </div>
                     <CurrencyInput
-                      className="relative appearance-none bg-yellow-lighter p-3 rounded-md text-grey-darker w-full pl-4"
+                      className="relative appearance-none bg-yellow-dark font-semibold p-3 rounded-md text-grey-darker w-full pl-4"
                       style={{ flex: "1 1 auto" }}
                       name="propertyInsurance"
                       value={this.state.propertyInsurance}
@@ -225,26 +226,26 @@ class RentVsBuy extends Component {
                 </div>
                 <div className="w-1/3">
                   <InputRange
-                    minValue={0}
-                    maxValue={100}
+                    minValue={4}
+                    maxValue={12}
                     step={0.01}
                     name="term"
                     value={this.state.interestRate}
                     onChange={value => {
                       this.setState({ interestRate: value });
                     }}
-                    className="block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
+                    className="block bg-yellow-dark font-semibold mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
                 </div>
                 <div className="w-1/3 ml-8">
                   <div className="flex items-stretch relative w-full">
                     <div className="-mr-px flex" />
                     <input
-                      className="appearance-none block bg-yellow-lighter p-3 rounded-md text-grey-darker w-full"
+                      className="appearance-none block bg-yellow-dark font-semibold p-3 rounded-md text-grey-darker w-full"
                       id="term"
                       type="number"
-                      min="0"
-                      max="100"
+                      min="4"
+                      max="12"
                       step="0.01"
                       name="interestRate"
                       value={this.state.interestRate}
@@ -263,7 +264,7 @@ class RentVsBuy extends Component {
               <div className="mb-4 flex items-center">
                 <div className="w-2/3">
                   <label
-                    className="block font-bold text-grey-darker mb-2 text-sm uppercase pr-8 text-right"
+                    className="block mb-4 text-grey-dark font-bold text-md"
                     htmlFor="percentageDown"
                   >
                     Estimated home loan monthly payment
@@ -298,14 +299,14 @@ class RentVsBuy extends Component {
                     onChange={value => {
                       this.setState({ percentageDown: value });
                     }}
-                    className="block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
+                    className="block bg-yellow-dark font-semibold mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
                 </div>
                 <div className="w-1/3 ml-8">
                   <div className="flex items-stretch relative w-full">
                     <div className="-mr-px flex" />
                     <input
-                      className="appearance-none block bg-yellow-lighter p-3 rounded-md text-grey-darker w-full"
+                      className="appearance-none block bg-yellow-dark font-semibold p-3 rounded-md text-grey-darker w-full"
                       id="term"
                       type="number"
                       min="0"

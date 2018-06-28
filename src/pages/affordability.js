@@ -5,6 +5,7 @@ import InputRange from "react-input-range";
 import InputGroup from "../components/InputGroup";
 import "./input-range.css";
 import { VictoryPie, VictoryLabel } from "victory";
+import { formatNumber, formatPercentage } from "../utils/utils";
 
 const NOT_QUALIFIED = "NOT_QUALIFIED";
 const QUALIFIED = "QUALIFIED";
@@ -83,13 +84,6 @@ class Affordability extends Component {
     return interestRate / 100 / parseFloat(12);
   }
 
-  formatNumber(number) {
-    if (isNaN(number)) {
-      return number;
-    } else {
-      return `$ ${number.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,")}`;
-    }
-  }
   borrowAmount = () => {
     if (!this.isQualified()) {
       return "Not qualified.";
@@ -112,7 +106,7 @@ class Affordability extends Component {
       let borrowAmount = this.borrowAmount();
       let result = (downPaymentPercent / 100) * borrowAmount;
 
-      return this.formatNumber(result);
+      return formatNumber(result);
     }
   }
   monthlyTaxes() {
@@ -211,6 +205,18 @@ class Affordability extends Component {
       monthlyPMI,
       monthlyLoanPayment
     );
+    let monthlyTaxesPercent = formatPercentage(
+      (monthlyTaxes / totalMonthlyPayment) * 100
+    );
+    let monthlyInsurancePercent = formatPercentage(
+      (monthlyInsurance / totalMonthlyPayment) * 100
+    );
+    let montlhyPMIPercent = formatPercentage(
+      (monthlyPMI / totalMonthlyPayment) * 100
+    );
+    let monthlyLoanPaymentPercent = formatPercentage(
+      (monthlyLoanPayment / totalMonthlyPayment) * 100
+    );
     return (
       <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <h1 className="text-xl text-grey mb-8">
@@ -238,7 +244,7 @@ class Affordability extends Component {
                     onChange={value => {
                       this.setState({ annualIncome: value });
                     }}
-                    className="block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
+                    className="block bg-yellow-dark font-semibold mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
                 </div>
                 <div className="w-1/3 ml-8">
@@ -252,7 +258,7 @@ class Affordability extends Component {
                       </div>
                     </div>
                     <CurrencyInput
-                      className="relative appearance-none bg-yellow-lighter p-3 rounded-md text-grey-darker w-full pl-4"
+                      className="relative appearance-none bg-yellow-dark font-semibold p-3 rounded-md text-grey-darker w-full pl-4"
                       style={{ flex: "1 1 auto" }}
                       name="monthlyRent"
                       value={annualIncome}
@@ -280,7 +286,7 @@ class Affordability extends Component {
                     onChange={value => {
                       this.setState({ monthlyDebt: value });
                     }}
-                    className="block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
+                    className="block bg-yellow-dark font-semibold mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
                 </div>
                 <div className="w-1/3 ml-8">
@@ -294,7 +300,7 @@ class Affordability extends Component {
                       </div>
                     </div>
                     <CurrencyInput
-                      className="relative appearance-none bg-yellow-lighter p-3 rounded-md text-grey-darker w-full pl-4"
+                      className="relative appearance-none bg-yellow-dark font-semibold p-3 rounded-md text-grey-darker w-full pl-4"
                       style={{ flex: "1 1 auto" }}
                       name="monthlyDebt"
                       value={monthlyDebt}
@@ -316,7 +322,7 @@ class Affordability extends Component {
                 <div className="w-2/3">
                   <div className="relative">
                     <select
-                      className="block appearance-none w-full bg-yellow-lighter border border-grey-lighter text-grey-darker py-3 px-4 pr-8 rounded leading-tight"
+                      className="block appearance-none w-full bg-yellow-dark font-semibold border border-grey-lighter text-grey-darker py-3 px-4 pr-8 rounded leading-tight"
                       name="downPaymentPercent"
                       value={this.state.downPaymentPercent}
                       onChange={this.handleChange}
@@ -350,7 +356,7 @@ class Affordability extends Component {
                 </div>
                 <div className="w-2/3">
                   <div className="relative">
-                    <select className="block appearance-none w-full bg-yellow-lighter border border-grey-lighter text-grey-darker py-3 px-4 pr-8 rounded leading-tight">
+                    <select className="block appearance-none w-full bg-yellow-dark font-semibold border border-grey-lighter text-grey-darker py-3 px-4 pr-8 rounded leading-tight">
                       <option value="760">760 or more</option>
                       <option value="740">740 - 759</option>
                       <option value="720">720 - 739</option>
@@ -385,25 +391,25 @@ class Affordability extends Component {
                 <div className="w-1/3">
                   <InputRange
                     minValue={0}
-                    maxValue={100}
+                    maxValue={12}
                     step={0.01}
                     name="term"
                     value={this.state.interestRate}
                     onChange={value => {
                       this.setState({ interestRate: value });
                     }}
-                    className="block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
+                    className="block bg-yellow-dark font-semibold mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
                 </div>
                 <div className="w-1/3 ml-8">
                   <div className="flex items-stretch relative w-full">
                     <div className="-mr-px flex" />
                     <input
-                      className="appearance-none block bg-yellow-lighter p-3 rounded-md text-grey-darker w-full"
+                      className="appearance-none block bg-yellow-dark font-semibold p-3 rounded-md text-grey-darker w-full"
                       id="term"
                       type="number"
                       min="0"
-                      max="100"
+                      max="12"
                       step="0.01"
                       name="interestRate"
                       value={this.state.interestRate}
@@ -437,7 +443,7 @@ class Affordability extends Component {
                     onChange={value => {
                       this.setState({ propertyTaxes: value });
                     }}
-                    className="block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
+                    className="block bg-yellow-dark font-semibold mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
                 </div>
                 <div className="w-1/3 ml-8">
@@ -451,7 +457,7 @@ class Affordability extends Component {
                       </div>
                     </div>
                     <CurrencyInput
-                      className="relative appearance-none bg-yellow-lighter p-3 rounded-md text-grey-darker w-full pl-4"
+                      className="relative appearance-none bg-yellow-dark font-semibold p-3 rounded-md text-grey-darker w-full pl-4"
                       style={{ flex: "1 1 auto" }}
                       name="propertyTaxes"
                       value={propertyTaxes}
@@ -478,7 +484,7 @@ class Affordability extends Component {
                     onChange={value => {
                       this.setState({ propertyInsurance: value });
                     }}
-                    className="block bg-yellow-lighter mb-6 p-3 rounded-md text-grey-darker w-full"
+                    className="block bg-yellow-dark font-semibold mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
                 </div>
                 <div className="w-1/3 ml-8">
@@ -492,7 +498,7 @@ class Affordability extends Component {
                       </div>
                     </div>
                     <CurrencyInput
-                      className="relative appearance-none bg-yellow-lighter p-3 rounded-md text-grey-darker w-full pl-4"
+                      className="relative appearance-none bg-yellow-dark font-semibold p-3 rounded-md text-grey-darker w-full pl-4"
                       style={{ flex: "1 1 auto" }}
                       name="propertyInsurance"
                       value={propertyInsurance}
@@ -504,114 +510,149 @@ class Affordability extends Component {
             </form>
           </div>
           <div className="w-100 md:w-1/2 px-4">
-            <div className="mb-4 flex items-center">
-              <div className="w-2/3">
-                <label
-                  className="block font-bold text-grey-darker mb-2 text-sm uppercase pr-8 text-right"
-                  htmlFor="percentageDown"
-                >
-                  Amount Available to Borrow
-                </label>
+            <div className="max-w-md ml-24" style={{ marginTop: "-4rem" }}>
+              <div style={{ width: "300px" }}>
+                <svg viewBox="0 0 300 300">
+                  <VictoryPie
+                    standalone={false}
+                    colorScale={["#22292f", "#b8c2cc", "#fff382", "#fdb714"]}
+                    width={300}
+                    height={300}
+                    data={[
+                      { x: "", y: monthlyTaxes },
+                      { x: "", y: monthlyInsurance },
+                      { x: "", y: monthlyPMI },
+                      { x: "", y: monthlyLoanPayment }
+                    ]}
+                    innerRadius={68}
+                    labelRadius={100}
+                    style={{ labels: { fontSize: 20, fill: "white" } }}
+                  />
+                  <VictoryLabel
+                    textAnchor="middle"
+                    style={{ fontSize: 18, fontWeight: 400, fill: "#fdb714" }}
+                    x={150}
+                    y={125}
+                    text={"Total"}
+                  />{" "}
+                  <VictoryLabel
+                    textAnchor="middle"
+                    style={{ fontSize: 18, fontWeight: 400, fill: "#fdb714" }}
+                    x={150}
+                    y={140}
+                    text={"Monthly Payment"}
+                  />
+                  <VictoryLabel
+                    textAnchor="middle"
+                    style={{ fontSize: 28, fontWeight: 500, fill: "#fdb714" }}
+                    x={150}
+                    y={160}
+                    text={formatNumber(totalMonthlyPayment)}
+                  />
+                </svg>
               </div>
-              <div className="1/3 text-right ml-auto">
-                <div className="text-yellow-dark text-2xl font-semibold">
-                  {this.formatNumber(borrowAmount)}
+              <div className="block -my-8">
+                <div className="flex justify-start mb-4">
+                  <div className="items-center">
+                    <div
+                      className="rounded-full p-4 mr-3"
+                      style={{ backgroundColor: "#22292f" }}
+                    />
+                  </div>
+                  <div className="text-left">
+                    <div className="text-grey-darker text-xl">
+                      Monthly Taxes
+                    </div>
+                    <div className="text-yellow-dark-darkest text-xl font-semibold">
+                      {formatNumber(monthlyTaxes)}
+                      <span className="text-grey-dark ml-2 font-light">
+                        {monthlyTaxesPercent}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-
-            <div className="mb-4 flex items-center">
-              <div className="w-2/3">
-                <label
-                  className="block font-bold text-grey-darker mb-2 text-sm uppercase pr-8 text-right"
-                  htmlFor="percentageDown"
-                >
-                  Money needed for the down payment
-                </label>
-              </div>
-              <div className="1/3 text-right ml-auto">
-                <div className="text-yellow-dark text-2xl font-semibold">
-                  {downPayment}
+                <div className="flex justify-start mb-4">
+                  <div className="items-center">
+                    <div
+                      className="rounded-full p-4 mr-3"
+                      style={{ backgroundColor: "#b8c2cc" }}
+                    />
+                  </div>
+                  <div className="text-left">
+                    <div className="text-grey-darker text-xl">
+                      Monthly Insurance
+                    </div>
+                    <div className="text-grey-darkest text-xl font-semibold">
+                      {formatNumber(monthlyInsurance)}
+                      <span className="text-grey-dark ml-2 font-light">
+                        {monthlyInsurancePercent}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-
-            <div className="mb-4 flex items-center">
-              <div className="w-2/3">
-                <label
-                  className="block font-bold text-grey-darker mb-2 text-sm uppercase pr-8 text-right"
-                  htmlFor="monthlyTaxes"
-                >
-                  Monthly Taxes
-                </label>
-              </div>
-              <div className="1/3 text-right ml-auto">
-                <div className="text-yellow-dark text-2xl font-semibold">
-                  {this.formatNumber(monthlyTaxes)}
+                <div className="flex justify-start mb-4">
+                  <div className="items-center">
+                    <div
+                      className="rounded-full p-4 mr-3"
+                      style={{ backgroundColor: "#fff382" }}
+                    />
+                  </div>
+                  <div className="text-left">
+                    <div className="text-grey-darker text-xl">Monthly PMI</div>
+                    <div className="text-yellow-dark-darkest text-xl font-semibold">
+                      {formatNumber(monthlyPMI)}
+                      <span className="text-grey-dark ml-2 font-light">
+                        {montlhyPMIPercent}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="mb-4 flex items-center">
-              <div className="w-2/3">
-                <label
-                  className="block font-bold text-grey-darker mb-2 text-sm uppercase pr-8 text-right"
-                  htmlFor="monthlyInsurance"
-                >
-                  Monthly Insurance
-                </label>
-              </div>
-              <div className="1/3 text-right ml-auto">
-                <div className="text-yellow-dark text-2xl font-semibold">
-                  {this.formatNumber(monthlyInsurance)}
+                <div className="flex justify-start mb-4">
+                  <div className="items-center">
+                    <div
+                      className="rounded-full p-4 mr-3"
+                      style={{ backgroundColor: "#fdb714" }}
+                    />
+                  </div>
+                  <div className="text-left">
+                    <div className="text-grey-darker text-xl">
+                      Monthly Loan Payment
+                    </div>
+                    <div className="text-yellow-dark-darkest text-xl font-semibold">
+                      {formatNumber(monthlyLoanPayment)}
+                      <span className="text-grey-dark ml-2 font-light">
+                        {monthlyLoanPaymentPercent}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="mb-4 flex items-center">
-              <div className="w-2/3">
-                <label
-                  className="block font-bold text-grey-darker mb-2 text-sm uppercase pr-8 text-right"
-                  htmlFor="monthlyPMI"
-                >
-                  Monthly PMI
-                </label>
-              </div>
-              <div className="1/3 text-right ml-auto">
-                <div className="text-yellow-dark text-2xl font-semibold">
-                  {this.formatNumber(monthlyPMI)}
+                <div className="flex justify-start mb-4">
+                  <div className="items-center">
+                    <div className="mr-3 font-bold text-2xl text-center w-8">
+                      -
+                    </div>
+                  </div>
+                  <div className="text-left">
+                    <div className="text-grey-darker text-xl">
+                      Amount Available to Borrow
+                    </div>
+                    <div className="text-yellow-dark-darkest text-xl font-semibold">
+                      {formatNumber(borrowAmount)}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-
-            <div className="mb-4 flex items-center">
-              <div className="w-2/3">
-                <label
-                  className="block font-bold text-grey-darker mb-2 text-sm uppercase pr-8 text-right"
-                  htmlFor="monthlyPMI"
-                >
-                  Monthly Loan Payment
-                </label>
-              </div>
-              <div className="1/3 text-right ml-auto">
-                <div className="text-yellow-dark text-2xl font-semibold">
-                  {this.formatNumber(monthlyLoanPayment)}
-                </div>
-              </div>
-            </div>
-
-            <div className="mb-4 flex items-center">
-              <div className="w-2/3">
-                <label
-                  className="block font-bold text-grey-darker mb-2 text-sm uppercase pr-8 text-right"
-                  htmlFor="totalMonthlyPayment"
-                >
-                  Total Monthly Payment
-                </label>
-              </div>
-              <div className="1/3 text-right ml-auto">
-                <div className="text-yellow-dark text-2xl font-semibold">
-                  <div className="rounded-full border-solid border-2 border-yellow bg-grey-darkest h-24  flex items-center justify-center">
-                    <div className="mx-2">
-                      {this.formatNumber(totalMonthlyPayment)}
+                <div className="flex justify-start mb-4">
+                  <div className="items-center">
+                    <div className="mr-3 font-bold text-2xl text-center w-8">
+                      -
+                    </div>
+                  </div>
+                  <div className="text-left">
+                    <div className="text-grey-darker text-xl">
+                      Money needed for the down payment
+                    </div>
+                    <div className="text-yellow-dark-darkest text-xl font-semibold">
+                      {downPayment}
                     </div>
                   </div>
                 </div>

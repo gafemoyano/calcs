@@ -1,14 +1,10 @@
-import React, { Component } from "react";
-import Link from "gatsby-link";
-import CurrencyInput from "react-currency-input";
-import InputRange from "react-input-range";
-import InputGroup from "../components/InputGroup";
-import "./input-range.css";
-import { VictoryPie, VictoryLabel } from "victory";
-import { formatNumber, formatPercentage } from "../utils/utils";
+import React, { Component } from 'react'
+import CurrencyInput from 'react-currency-input'
+import InputRange from 'react-input-range'
+import './input-range.css'
+import { VictoryPie, VictoryLabel } from 'victory'
+import { formatNumber, formatPercentage } from '../utils/utils'
 
-const NOT_QUALIFIED = "NOT_QUALIFIED";
-const QUALIFIED = "QUALIFIED";
 const creditScoreRange = {
   5: {
     760: 0.000458,
@@ -38,7 +34,7 @@ const creditScoreRange = {
     640: 0.000358,
     620: 0.000375
   }
-};
+}
 
 class Affordability extends Component {
   state = {
@@ -49,79 +45,79 @@ class Affordability extends Component {
     interestRate: 4.5,
     propertyTaxes: 5000,
     propertyInsurance: 3000
-  };
+  }
 
   handleChange = event => {
     this.setState({
       [event.target.name]: event.target.value
-    });
-  };
+    })
+  }
 
   tryParseInt(str, defaultValue) {
-    var retValue = defaultValue;
+    var retValue = defaultValue
     if (str !== null) {
       if (str.length > 0) {
         if (!isNaN(str)) {
-          retValue = parseInt(str);
+          retValue = parseInt(str)
         }
       }
     }
-    return retValue;
+    return retValue
   }
 
   presentValue = () => {
-    let monthlyRate = this.monthlyRate();
-    let pmt = this.monthlyLoanPayment();
+    let monthlyRate = this.monthlyRate()
+    let pmt = this.monthlyLoanPayment()
     let presentValue =
       pmt *
       Math.pow(1 + monthlyRate, -360) *
-      ((Math.pow(1 + monthlyRate, 360) - 1) / monthlyRate);
-    return presentValue;
-  };
+      ((Math.pow(1 + monthlyRate, 360) - 1) / monthlyRate)
+    return presentValue
+  }
 
   monthlyRate() {
-    let interestRate = parseFloat(this.state.interestRate);
-    return interestRate / 100 / parseFloat(12);
+    let interestRate = parseFloat(this.state.interestRate)
+    return interestRate / 100 / parseFloat(12)
   }
 
   borrowAmount = () => {
     if (!this.isQualified()) {
-      return "Not qualified.";
+      return 'Not qualified.'
     } else {
-      let presentValue = this.presentValue();
+      let presentValue = this.presentValue()
       if (presentValue < 0) {
-        return "Not qualified.";
+        return 'Not qualified.'
       } else {
-        return presentValue;
+        return presentValue
       }
     }
-    return 0;
-  };
+    return 0
+  }
 
   downPayment() {
     if (!this.isQualified()) {
-      return "";
+      return ''
     } else {
-      let { downPaymentPercent } = this.state;
-      let borrowAmount = this.borrowAmount();
-      let result = (downPaymentPercent / 100) * borrowAmount;
+      let { downPaymentPercent } = this.state
+      let borrowAmount = this.borrowAmount()
+      let result = (downPaymentPercent / 100) * borrowAmount
 
-      return formatNumber(result);
+      return formatNumber(result)
     }
   }
   monthlyTaxes() {
-    return this.state.propertyTaxes / 12;
+    return this.state.propertyTaxes / 12
   }
   monthlyInsurance() {
-    return this.state.propertyInsurance / 12;
+    return this.state.propertyInsurance / 12
   }
   monthlyPMI = borrowAmount => {
     if (this.isQualified()) {
-      return borrowAmount * this.lookup();
+      return borrowAmount * this.lookup()
     } else {
-      return 0;
+      return 0
     }
-  };
+  }
 
   totalMonthlyPayment(
     monthlyTaxes,
@@ -130,40 +126,40 @@ class Affordability extends Component {
     monthlyLoanPayment
   ) {
     if (this.isQualified()) {
-      return monthlyTaxes + monthlyInsurance + monthlyPMI + monthlyLoanPayment;
+      return monthlyTaxes + monthlyInsurance + monthlyPMI + monthlyLoanPayment
     } else {
-      return 0;
+      return 0
     }
   }
   isQualified = () => {
-    let { downPaymentPercent } = this.state;
-    let creditScore = parseInt(this.state.creditScore, 10);
+    let { downPaymentPercent } = this.state
+    let creditScore = parseInt(this.state.creditScore, 10)
 
     if (downPaymentPercent >= 20) {
-      return false;
+      return false
     } else if (
       (downPaymentPercent === 5 && creditScore === 640) ||
       (downPaymentPercent === 5 && creditScore === 620)
     ) {
-      return false;
+      return false
     } else {
-      return true;
+      return true
     }
-  };
+  }
 
   monthlyLoanPayment = () => {
-    let monthlyIncome = this.state.annualIncome / 12;
-    let monthlyDebtPercent = this.state.monthlyDebt / monthlyIncome;
+    let monthlyIncome = this.state.annualIncome / 12
+    let monthlyDebtPercent = this.state.monthlyDebt / monthlyIncome
 
-    let monthlyTaxes = this.monthlyTaxes();
-    let monthlyTaxesPercent = monthlyTaxes / monthlyIncome;
+    let monthlyTaxes = this.monthlyTaxes()
+    let monthlyTaxesPercent = monthlyTaxes / monthlyIncome
 
-    let monthlyInsurance = this.monthlyInsurance();
-    let monthlyInsurancePercent = monthlyInsurance / monthlyIncome;
+    let monthlyInsurance = this.monthlyInsurance()
+    let monthlyInsurancePercent = monthlyInsurance / monthlyIncome
 
-    let montlhyPMIPercent = "Not Qualified";
+    let montlhyPMIPercent = 'Not Qualified'
     if (this.isQualified()) {
-      montlhyPMIPercent = this.state.monthlyPMI / monthlyIncome;
+      montlhyPMIPercent = this.state.monthlyPMI / monthlyIncome
     }
 
     let result =
@@ -171,17 +167,17 @@ class Affordability extends Component {
         monthlyDebtPercent -
         monthlyInsurancePercent -
         monthlyTaxesPercent) *
-      monthlyIncome;
-    return result;
-  };
+      monthlyIncome
+    return result
+  }
 
   lookup = () => {
     if (this.isQualified()) {
-      let { creditScore, downPaymentPercent } = this.state;
-      return creditScoreRange[downPaymentPercent][creditScore];
+      let { creditScore, downPaymentPercent } = this.state
+      return creditScoreRange[downPaymentPercent][creditScore]
     }
-    return 0;
-  };
+    return 0
+  }
   render() {
     let {
       annualIncome,
@@ -191,32 +187,32 @@ class Affordability extends Component {
       interestRate,
       propertyTaxes,
       propertyInsurance
-    } = this.state;
+    } = this.state
 
-    let borrowAmount = this.borrowAmount();
-    let downPayment = this.downPayment();
-    let monthlyTaxes = this.monthlyTaxes();
-    let monthlyInsurance = this.monthlyInsurance();
-    let monthlyPMI = this.monthlyPMI(borrowAmount);
-    let monthlyLoanPayment = this.monthlyLoanPayment();
+    let borrowAmount = this.borrowAmount()
+    let downPayment = this.downPayment()
+    let monthlyTaxes = this.monthlyTaxes()
+    let monthlyInsurance = this.monthlyInsurance()
+    let monthlyPMI = this.monthlyPMI(borrowAmount)
+    let monthlyLoanPayment = this.monthlyLoanPayment()
     let totalMonthlyPayment = this.totalMonthlyPayment(
       monthlyTaxes,
       monthlyInsurance,
       monthlyPMI,
       monthlyLoanPayment
-    );
+    )
     let monthlyTaxesPercent = formatPercentage(
       (monthlyTaxes / totalMonthlyPayment) * 100
-    );
+    )
     let monthlyInsurancePercent = formatPercentage(
       (monthlyInsurance / totalMonthlyPayment) * 100
-    );
+    )
     let montlhyPMIPercent = formatPercentage(
       (monthlyPMI / totalMonthlyPayment) * 100
-    );
+    )
     let monthlyLoanPaymentPercent = formatPercentage(
       (monthlyLoanPayment / totalMonthlyPayment) * 100
-    );
+    )
     return (
       <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <h1 className="text-xl text-grey mb-8">
@@ -242,7 +238,7 @@ class Affordability extends Component {
                     name="annualIncome"
                     value={annualIncome}
                     onChange={value => {
-                      this.setState({ annualIncome: value });
+                      this.setState({ annualIncome: value })
                     }}
                     className="block bg-yellow-dark font-semibold mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
@@ -252,14 +248,14 @@ class Affordability extends Component {
                     <div className="-mr-px flex">
                       <div
                         className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
-                        style={{ padding: ".375rem .75rem" }}
+                        style={{ padding: '.375rem .75rem' }}
                       >
                         $
                       </div>
                     </div>
                     <CurrencyInput
                       className="relative appearance-none bg-yellow-dark font-semibold p-3 rounded-md text-grey-darker w-full pl-4"
-                      style={{ flex: "1 1 auto" }}
+                      style={{ flex: '1 1 auto' }}
                       name="monthlyRent"
                       value={annualIncome}
                       onChangeEvent={this.handleChange}
@@ -284,7 +280,7 @@ class Affordability extends Component {
                     name="monthlyDebt"
                     value={monthlyDebt}
                     onChange={value => {
-                      this.setState({ monthlyDebt: value });
+                      this.setState({ monthlyDebt: value })
                     }}
                     className="block bg-yellow-dark font-semibold mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
@@ -294,14 +290,14 @@ class Affordability extends Component {
                     <div className="-mr-px flex">
                       <div
                         className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
-                        style={{ padding: ".375rem .75rem" }}
+                        style={{ padding: '.375rem .75rem' }}
                       >
                         $
                       </div>
                     </div>
                     <CurrencyInput
                       className="relative appearance-none bg-yellow-dark font-semibold p-3 rounded-md text-grey-darker w-full pl-4"
-                      style={{ flex: "1 1 auto" }}
+                      style={{ flex: '1 1 auto' }}
                       name="monthlyDebt"
                       value={monthlyDebt}
                       onChangeEvent={this.handleChange}
@@ -396,7 +392,7 @@ class Affordability extends Component {
                     name="term"
                     value={this.state.interestRate}
                     onChange={value => {
-                      this.setState({ interestRate: value });
+                      this.setState({ interestRate: value })
                     }}
                     className="block bg-yellow-dark font-semibold mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
@@ -417,7 +413,7 @@ class Affordability extends Component {
                     />
                     <div
                       className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
-                      style={{ padding: ".375rem .75rem" }}
+                      style={{ padding: '.375rem .75rem' }}
                     >
                       %
                     </div>
@@ -441,7 +437,7 @@ class Affordability extends Component {
                     name="propertyTaxes"
                     value={propertyTaxes}
                     onChange={value => {
-                      this.setState({ propertyTaxes: value });
+                      this.setState({ propertyTaxes: value })
                     }}
                     className="block bg-yellow-dark font-semibold mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
@@ -451,14 +447,14 @@ class Affordability extends Component {
                     <div className="-mr-px flex">
                       <div
                         className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
-                        style={{ padding: ".375rem .75rem" }}
+                        style={{ padding: '.375rem .75rem' }}
                       >
                         $
                       </div>
                     </div>
                     <CurrencyInput
                       className="relative appearance-none bg-yellow-dark font-semibold p-3 rounded-md text-grey-darker w-full pl-4"
-                      style={{ flex: "1 1 auto" }}
+                      style={{ flex: '1 1 auto' }}
                       name="propertyTaxes"
                       value={propertyTaxes}
                       onChangeEvent={this.handleChange}
@@ -482,7 +478,7 @@ class Affordability extends Component {
                     name="propertyInsurance"
                     value={propertyInsurance}
                     onChange={value => {
-                      this.setState({ propertyInsurance: value });
+                      this.setState({ propertyInsurance: value })
                     }}
                     className="block bg-yellow-dark font-semibold mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
@@ -492,14 +488,14 @@ class Affordability extends Component {
                     <div className="-mr-px flex">
                       <div
                         className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
-                        style={{ padding: ".375rem .75rem" }}
+                        style={{ padding: '.375rem .75rem' }}
                       >
                         $
                       </div>
                     </div>
                     <CurrencyInput
                       className="relative appearance-none bg-yellow-dark font-semibold p-3 rounded-md text-grey-darker w-full pl-4"
-                      style={{ flex: "1 1 auto" }}
+                      style={{ flex: '1 1 auto' }}
                       name="propertyInsurance"
                       value={propertyInsurance}
                       onChangeEvent={this.handleChange}
@@ -510,41 +506,41 @@ class Affordability extends Component {
             </form>
           </div>
           <div className="w-100 md:w-1/2 px-4">
-            <div className="max-w-md ml-24" style={{ marginTop: "-4rem" }}>
-              <div style={{ width: "300px" }}>
+            <div className="max-w-md ml-24" style={{ marginTop: '-4rem' }}>
+              <div style={{ width: '300px' }}>
                 <svg viewBox="0 0 300 300">
                   <VictoryPie
                     standalone={false}
-                    colorScale={["#22292f", "#b8c2cc", "#fff382", "#fdb714"]}
+                    colorScale={['#22292f', '#b8c2cc', '#fff382', '#fdb714']}
                     width={300}
                     height={300}
                     data={[
-                      { x: "", y: monthlyTaxes },
-                      { x: "", y: monthlyInsurance },
-                      { x: "", y: monthlyPMI },
-                      { x: "", y: monthlyLoanPayment }
+                      { x: '', y: monthlyTaxes },
+                      { x: '', y: monthlyInsurance },
+                      { x: '', y: monthlyPMI },
+                      { x: '', y: monthlyLoanPayment }
                     ]}
                     innerRadius={68}
                     labelRadius={100}
-                    style={{ labels: { fontSize: 20, fill: "white" } }}
+                    style={{ labels: { fontSize: 20, fill: 'white' } }}
                   />
                   <VictoryLabel
                     textAnchor="middle"
-                    style={{ fontSize: 18, fontWeight: 400, fill: "#fdb714" }}
+                    style={{ fontSize: 18, fontWeight: 400, fill: '#fdb714' }}
                     x={150}
                     y={125}
-                    text={"Total"}
-                  />{" "}
+                    text={'Total'}
+                  />{' '}
                   <VictoryLabel
                     textAnchor="middle"
-                    style={{ fontSize: 18, fontWeight: 400, fill: "#fdb714" }}
+                    style={{ fontSize: 18, fontWeight: 400, fill: '#fdb714' }}
                     x={150}
                     y={140}
-                    text={"Monthly Payment"}
+                    text={'Monthly Payment'}
                   />
                   <VictoryLabel
                     textAnchor="middle"
-                    style={{ fontSize: 28, fontWeight: 500, fill: "#fdb714" }}
+                    style={{ fontSize: 28, fontWeight: 500, fill: '#fdb714' }}
                     x={150}
                     y={160}
                     text={formatNumber(totalMonthlyPayment)}
@@ -556,7 +552,7 @@ class Affordability extends Component {
                   <div className="items-center">
                     <div
                       className="rounded-full p-4 mr-3"
-                      style={{ backgroundColor: "#22292f" }}
+                      style={{ backgroundColor: '#22292f' }}
                     />
                   </div>
                   <div className="text-left">
@@ -575,7 +571,7 @@ class Affordability extends Component {
                   <div className="items-center">
                     <div
                       className="rounded-full p-4 mr-3"
-                      style={{ backgroundColor: "#b8c2cc" }}
+                      style={{ backgroundColor: '#b8c2cc' }}
                     />
                   </div>
                   <div className="text-left">
@@ -594,7 +590,7 @@ class Affordability extends Component {
                   <div className="items-center">
                     <div
                       className="rounded-full p-4 mr-3"
-                      style={{ backgroundColor: "#fff382" }}
+                      style={{ backgroundColor: '#fff382' }}
                     />
                   </div>
                   <div className="text-left">
@@ -611,7 +607,7 @@ class Affordability extends Component {
                   <div className="items-center">
                     <div
                       className="rounded-full p-4 mr-3"
-                      style={{ backgroundColor: "#fdb714" }}
+                      style={{ backgroundColor: '#fdb714' }}
                     />
                   </div>
                   <div className="text-left">
@@ -661,8 +657,8 @@ class Affordability extends Component {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default Affordability;
+export default Affordability

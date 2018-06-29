@@ -1,11 +1,7 @@
 import React, { Component } from 'react'
-import Link from 'gatsby-link'
 import CurrencyInput from 'react-currency-input'
 import InputRange from 'react-input-range'
-import InputGroup from '../components/InputGroup'
 import './input-range.css'
-import { VictoryPie, VictoryLabel } from 'victory'
-import { formatNumber } from '../utils/utils'
 
 class RentVsBuy extends Component {
   state = {

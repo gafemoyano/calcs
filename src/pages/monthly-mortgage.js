@@ -1,104 +1,101 @@
-import React, { Component } from "react";
-import Link from "gatsby-link";
-import CurrencyInput from "react-currency-input";
-import InputRange from "react-input-range";
-import InputGroup from "../components/InputGroup";
-import "./input-range.css";
-import { VictoryPie, VictoryLabel } from "victory";
-import { formatNumber } from "../utils/utils";
+import React, { Component } from 'react'
+import CurrencyInput from 'react-currency-input'
+import InputRange from 'react-input-range'
+import './input-range.css'
+import { VictoryPie, VictoryLabel } from 'victory'
 
 class MonthlyMortgage extends Component {
   state = {
     mortgageLoan: 90000,
     term: 15,
     interestRate: 6
-  };
+  }
 
   handleChange = event => {
     this.setState({
       [event.target.name]: event.target.value
-    });
-  };
+    })
+  }
 
   handleMortgageLoanChange = event => {
-    let newValue = this.state.mortgageLoan;
-    const value = event.target.value;
+    let newValue = this.state.mortgageLoan
+    const value = event.target.value
     if (value !== null) {
       if (value.length > 0) {
         if (!isNaN(value)) {
-          newValue = parseInt(value);
+          newValue = parseInt(value)
         }
       }
     }
-    newValue = newValue.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+    newValue = newValue.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')
     this.setState({
       [event.target.name]: newValue
-    });
-  };
+    })
+  }
 
   calculateMortage = () => {
-    let mortgageLoan = parseInt(this.state.mortgageLoan, 10);
-    let term = parseInt(this.state.term, 10);
-    let monthlyRate = this.monthlyRate();
+    let mortgageLoan = parseInt(this.state.mortgageLoan, 10)
+    let term = parseInt(this.state.term, 10)
+    let monthlyRate = this.monthlyRate()
 
-    let pow = Math.pow(1 + monthlyRate, term * 12);
-    let mortage = mortgageLoan * ((monthlyRate * pow) / (pow - 1));
+    let pow = Math.pow(1 + monthlyRate, term * 12)
+    let mortage = mortgageLoan * ((monthlyRate * pow) / (pow - 1))
     if (mortage !== null && mortage !== undefined && mortage !== NaN) {
-      return mortage;
+      return mortage
     } else {
-      return 0;
+      return 0
     }
-  };
+  }
   formatText = event => {
-    const currentValue = parseInt(event.currentTarget.value, 10);
+    const currentValue = parseInt(event.currentTarget.value, 10)
     this.setState({
       [event.currentTarget.name]: currentValue
         .toFixed()
-        .replace(/(\d)(?=(\d{3})+\.)/g, "$1,")
-    });
-  };
+        .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')
+    })
+  }
 
   totalInterest = () => {
-    let interestRate = parseFloat(this.state.interestRate / 12) / 100;
-    let mortgageLoan = parseInt(this.state.mortgageLoan, 10);
-    let payments = this.state.term * 12;
-    let monthlyAmount = this.calculateMortage();
-    let principal = [];
-    let totalInterest = 0;
+    let interestRate = parseFloat(this.state.interestRate / 12) / 100
+    let mortgageLoan = parseInt(this.state.mortgageLoan, 10)
+    let payments = this.state.term * 12
+    let monthlyAmount = this.calculateMortage()
+    let principal = []
+    let totalInterest = 0
     for (var i = 1; i <= payments; i++) {
-      let interestPaid = mortgageLoan * interestRate;
-      let principalPaid = monthlyAmount - interestPaid;
-      mortgageLoan = mortgageLoan - principalPaid;
-      totalInterest = totalInterest + interestPaid;
+      let interestPaid = mortgageLoan * interestRate
+      let principalPaid = monthlyAmount - interestPaid
+      mortgageLoan = mortgageLoan - principalPaid
+      totalInterest = totalInterest + interestPaid
     }
-    return parseInt(totalInterest, 10);
-  };
+    return parseInt(totalInterest, 10)
+  }
 
   interestOnlyMortgagePayment = () => {
-    let interestRate = parseFloat(this.state.interestRate / 12) / 100;
-    let mortgageLoan = parseInt(this.state.mortgageLoan, 10);
-    let monthlyAmount = this.calculateMortage();
-    let interestPaid = mortgageLoan * interestRate;
+    let interestRate = parseFloat(this.state.interestRate / 12) / 100
+    let mortgageLoan = parseInt(this.state.mortgageLoan, 10)
+    let monthlyAmount = this.calculateMortage()
+    let interestPaid = mortgageLoan * interestRate
 
-    return parseInt(interestPaid, 10);
-  };
+    return parseInt(interestPaid, 10)
+  }
 
   monthlyRate() {
-    let interestRate = parseFloat(this.state.interestRate);
-    return interestRate / 100 / parseFloat(12);
+    let interestRate = parseFloat(this.state.interestRate)
+    return interestRate / 100 / parseFloat(12)
   }
 
   render() {
-    let { mortgageLoan, term, interestRate } = this.state;
+    let { mortgageLoan, term, interestRate } = this.state
     // let mortgageLoan = parseInt(this.state.mortgageLoan.replace(/,/g, ''), 10)
-    let mortage = parseInt(this.calculateMortage(), 10);
-    let totalInterest = this.totalInterest();
-    let totalLoan = totalInterest + mortgageLoan;
-    let pmt = this.interestOnlyMortgagePayment();
+    let mortage = parseInt(this.calculateMortage(), 10)
+    let totalInterest = this.totalInterest()
+    let totalLoan = totalInterest + mortgageLoan
+    let pmt = this.interestOnlyMortgagePayment()
     let principalPercentage = `${((mortgageLoan / totalLoan) * 100).toFixed(
       3
-    )} %`;
-    let loanPercentage = `${((totalInterest / totalLoan) * 100).toFixed(3)} %`;
+    )} %`
+    let loanPercentage = `${((totalInterest / totalLoan) * 100).toFixed(3)} %`
 
     return (
       <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -125,7 +122,7 @@ class MonthlyMortgage extends Component {
                     name="homeRange"
                     value={mortgageLoan}
                     onChange={value => {
-                      this.setState({ mortgageLoan: value });
+                      this.setState({ mortgageLoan: value })
                     }}
                     className="block bg-yellow-dark mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
@@ -135,14 +132,14 @@ class MonthlyMortgage extends Component {
                     <div className="-mr-px flex">
                       <div
                         className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
-                        style={{ padding: ".375rem .75rem" }}
+                        style={{ padding: '.375rem .75rem' }}
                       >
                         $
                       </div>
                     </div>
                     <CurrencyInput
                       className="relative appearance-none bg-yellow-dark p-3 rounded-md text-grey-darker font-semibold w-full pl-4"
-                      style={{ flex: "1 1 auto" }}
+                      style={{ flex: '1 1 auto' }}
                       name="mortgageLoan"
                       value={this.state.mortgageLoan}
                       onChangeEvent={this.handleChange}
@@ -166,7 +163,7 @@ class MonthlyMortgage extends Component {
                     name="term"
                     value={this.state.term}
                     onChange={value => {
-                      this.setState({ term: value });
+                      this.setState({ term: value })
                     }}
                     className="block bg-yellow-dark mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
@@ -187,7 +184,7 @@ class MonthlyMortgage extends Component {
                     />
                     <div
                       className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
-                      style={{ padding: ".375rem .75rem" }}
+                      style={{ padding: '.375rem .75rem' }}
                     >
                       Years
                     </div>
@@ -212,7 +209,7 @@ class MonthlyMortgage extends Component {
                     name="term"
                     value={this.state.interestRate}
                     onChange={value => {
-                      this.setState({ interestRate: value });
+                      this.setState({ interestRate: value })
                     }}
                     className="block bg-yellow-dark mb-6 p-3 rounded-md text-grey-darker w-full"
                   />
@@ -233,7 +230,7 @@ class MonthlyMortgage extends Component {
                     />
                     <div
                       className="items-center flex leading-normal text-center whitespace-no-wrap bg-grey-light rounded-sm"
-                      style={{ padding: ".375rem .75rem" }}
+                      style={{ padding: '.375rem .75rem' }}
                     >
                       %
                     </div>
@@ -248,39 +245,39 @@ class MonthlyMortgage extends Component {
                 <svg viewBox="0 0 300 300">
                   <VictoryPie
                     standalone={false}
-                    colorScale={["#22292f", "#fdb714"]}
+                    colorScale={['#22292f', '#fdb714']}
                     width={300}
                     height={300}
                     data={[
-                      { x: "", y: parseInt(mortgageLoan, 10) },
-                      { x: "", y: totalInterest }
+                      { x: '', y: parseInt(mortgageLoan, 10) },
+                      { x: '', y: totalInterest }
                     ]}
                     innerRadius={68}
                     labelRadius={100}
-                    style={{ labels: { fontSize: 20, fill: "white" } }}
+                    style={{ labels: { fontSize: 20, fill: 'white' } }}
                   />
                   <VictoryLabel
                     textAnchor="middle"
-                    style={{ fontSize: 18, fontWeight: 400, fill: "#fdb714" }}
+                    style={{ fontSize: 18, fontWeight: 400, fill: '#fdb714' }}
                     x={150}
                     y={125}
-                    text={"Total"}
-                  />{" "}
+                    text={'Total'}
+                  />{' '}
                   <VictoryLabel
                     textAnchor="middle"
-                    style={{ fontSize: 18, fontWeight: 400, fill: "#fdb714" }}
+                    style={{ fontSize: 18, fontWeight: 400, fill: '#fdb714' }}
                     x={150}
                     y={140}
-                    text={"Monthly Payment"}
+                    text={'Monthly Payment'}
                   />
                   <VictoryLabel
                     textAnchor="middle"
-                    style={{ fontSize: 28, fontWeight: 500, fill: "#fdb714" }}
+                    style={{ fontSize: 28, fontWeight: 500, fill: '#fdb714' }}
                     x={150}
                     y={160}
                     text={`$${mortage
                       .toFixed(2)
-                      .replace(/(\d)(?=(\d{3})+\.)/g, "$1,")}`}
+                      .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}`}
                   />
                 </svg>
               </div>
@@ -289,7 +286,7 @@ class MonthlyMortgage extends Component {
                   <div className="items-center">
                     <div
                       className="rounded-full p-4 mr-3"
-                      style={{ backgroundColor: "#22292f" }}
+                      style={{ backgroundColor: '#22292f' }}
                     />
                   </div>
                   <div className="text-left">
@@ -299,7 +296,7 @@ class MonthlyMortgage extends Component {
                     <div className="text-yellow-dark-darkest text-xl font-semibold">
                       ${mortgageLoan
                         .toFixed(2)
-                        .replace(/(\d)(?=(\d{3})+\.)/g, "$1,")}
+                        .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}
                       <span className="text-grey-dark ml-2 font-light">
                         {principalPercentage}
                       </span>
@@ -310,7 +307,7 @@ class MonthlyMortgage extends Component {
                   <div className="items-center">
                     <div
                       className="rounded-full p-4 mr-3"
-                      style={{ backgroundColor: "#fdb714" }}
+                      style={{ backgroundColor: '#fdb714' }}
                     />
                   </div>
                   <div className="text-left">
@@ -320,7 +317,7 @@ class MonthlyMortgage extends Component {
                     <div className="text-grey-darkest text-xl font-semibold">
                       ${totalInterest
                         .toFixed(2)
-                        .replace(/(\d)(?=(\d{3})+\.)/g, "$1,")}
+                        .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}
                       <span className="text-grey-dark ml-2 font-light">
                         {loanPercentage}
                       </span>
@@ -336,7 +333,7 @@ class MonthlyMortgage extends Component {
                       Interest-Only Mortgage Payment
                     </div>
                     <div className="text-yellow-dark-darkest text-xl font-semibold">
-                      ${pmt.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,")}
+                      ${pmt.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}
                     </div>
                   </div>
                 </div>
@@ -348,7 +345,7 @@ class MonthlyMortgage extends Component {
                     <div className="text-grey-darkest text-2xl font-bold">
                       ${totalLoan
                         .toFixed(2)
-                        .replace(/(\d)(?=(\d{3})+\.)/g, "$1,")}
+                        .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')}
                     </div>
                   </div>
                 </div>
@@ -357,8 +354,8 @@ class MonthlyMortgage extends Component {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default MonthlyMortgage;
+export default MonthlyMortgage

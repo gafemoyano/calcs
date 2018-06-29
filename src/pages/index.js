@@ -1,10 +1,6 @@
-import React, { Component } from "react";
-import Link from "gatsby-link";
-import CurrencyInput from "react-currency-input";
-import InputRange from "react-input-range";
-import InputGroup from "../components/InputGroup";
-import "./input-range.css";
-import { VictoryPie, VictoryLabel } from "victory";
+import React, { Component } from 'react'
+import Link from 'gatsby-link'
+import './input-range.css'
 
 class IndexPage extends Component {
   render() {
@@ -28,8 +24,8 @@ class IndexPage extends Component {
           </li>
         </ul>
       </div>
-    );
+    )
   }
 }
 
-export default IndexPage;
+export default IndexPage

@@ -1,6 +1,6 @@
 module.exports = {
   siteMetadata: {
-    title: 'Gatsby Starter Tailwind',
+    title: 'United Premier Mortgage'
   },
-  plugins: ['gatsby-plugin-react-helmet'],
-};
+  plugins: ['gatsby-plugin-react-helmet']
+}
